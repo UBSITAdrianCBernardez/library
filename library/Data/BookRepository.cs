@@ -37,6 +37,7 @@ public class BookRepository
     // READ: every book, sorted by title.
     public async Task<List<Book>> GetAllAsync()
     {
+
         const string sql = "SELECT book_id, title, category, price FROM lending.book ORDER BY title;";
 
 
