@@ -1,31 +1,88 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Custom Library Styling & Color Palette */
 body {
-  margin-bottom: 60px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Navbar Enhancement */
+header nav.navbar {
+    background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    header nav.navbar .navbar-brand,
+    header nav.navbar .nav-link {
+        color: #ffffff !important;
+        transition: opacity 0.2s ease;
+    }
+
+        header nav.navbar .nav-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+/* Container Card Wrapper */
+.container main {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+}
+
+/* Page Headings */
+h2 {
+    color: #1e3c72;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Tables */
+table.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    table.table thead {
+        background-color: #2a5298;
+        color: #ffffff;
+    }
+
+        table.table thead th {
+            border: none;
+            padding: 12px;
+        }
+
+    table.table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+        table.table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    border: none;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    transition: transform 0.1s ease;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%);
+    border: none;
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.3);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+    border: none;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
 }
