@@ -1,0 +1,26 @@
+﻿@model library.Models.Member
+@{
+    ViewData["Title"] = "Edit Member";
+}
+<h2>Edit Member</h2>
+<form asp-action="Edit">
+    <input type="hidden" asp-for="MemberId" />
+    <div class="form-group mb-3">
+        <label asp-for="FullName" class="control-label"></label>
+        <input asp-for="FullName" class="form-control" />
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="MemberType" class="control-label"></label>
+        <select asp-for="MemberType" class="form-control">
+            <option value="Regular">Regular</option>
+            <option value="Student">Student</option>
+            <option value="Faculty">Faculty</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>

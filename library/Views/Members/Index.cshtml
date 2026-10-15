@@ -1,0 +1,32 @@
+﻿@model IEnumerable<library.Models.Member>
+@{
+    ViewData["Title"] = "Members";
+}
+<h2>Members</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Member</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Member Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FullName</td>
+                <td>@(item.Email ?? "—")</td>
+                <td>@item.MemberType</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
