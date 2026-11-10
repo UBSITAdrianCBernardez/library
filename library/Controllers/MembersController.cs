@@ -25,16 +25,27 @@ public class MembersController : Controller
         return View();
     }
 
+    // POST /Members/Create : the form was submitted.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Member member)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            return View(member);
+        }
+
+        try
         {
             await _repository.AddAsync(member);
-            return RedirectToAction(nameof(Index));
         }
-        return View(member);
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+        {
+            ModelState.AddModelError("Email", "Another member already uses this email.");
+            return View(member);
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(long id)
@@ -44,18 +55,27 @@ public class MembersController : Controller
         return View(member);
     }
 
+    // POST /Members/Edit/5 : the changed form was submitted.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(long id, Member member)
+    public async Task<IActionResult> Edit(Member member)
     {
-        if (id != member.MemberId) return NotFound();
+        if (!ModelState.IsValid)
+        {
+            return View(member);
+        }
 
-        if (ModelState.IsValid)
+        try
         {
             await _repository.UpdateAsync(member);
-            return RedirectToAction(nameof(Index));
         }
-        return View(member);
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+        {
+            ModelState.AddModelError("Email", "Another member already uses this email.");
+            return View(member);
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Delete(long id)
