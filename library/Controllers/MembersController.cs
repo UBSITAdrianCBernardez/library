@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Npgsql;
+using Microsoft.AspNetCore.Mvc;
 using library.Data;
 using library.Models;
 
@@ -64,11 +65,26 @@ public class MembersController : Controller
         return View(member);
     }
 
+    // POST /Members/Delete/5 : the delete was confirmed.
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(long id)
     {
-        await _repository.DeleteAsync(id);
+        try
+        {
+            await _repository.DeleteAsync(id);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+        {
+            var member = await _repository.GetByIdAsync(id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Error = "This member has loans on record, so the database will not delete them.";
+            return View("Delete", member);
+        }
+
         return RedirectToAction(nameof(Index));
     }
 }
