@@ -1,14 +1,11 @@
-
-
 using Npgsql;
 using library.Data;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 // Database: read the connection string from User Secrets and create one shared data source.
 var connectionString = builder.Configuration.GetConnectionString("Library");
 if (string.IsNullOrWhiteSpace(connectionString))
@@ -17,6 +14,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 var dataSource = NpgsqlDataSource.Create(connectionString);
 builder.Services.AddSingleton(dataSource);
+
 // Repositories: one new object per web request.
 builder.Services.AddScoped<BookRepository>();
 
@@ -25,6 +23,9 @@ builder.Services.AddScoped<BookRepository>();
 
 // Add this line for the member repository:
 builder.Services.AddScoped<MemberRepository>();
+
+// Register LoanRepository so ASP.NET Core can hand it to controllers:
+builder.Services.AddScoped<LoanRepository>();
 
 var app = builder.Build();
 
@@ -36,23 +37,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
 app.UseHttpsRedirection();
 app.UseRouting();
 
-
 app.UseAuthorization();
 
-
 app.MapStaticAssets();
-
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
-
-
 
 app.Run();
