@@ -8,16 +8,37 @@ namespace library.Controllers;
 public class MembersController : Controller
 {
     private readonly MemberRepository _repository;
+    private readonly LoanRepository _loans;
 
-    public MembersController(MemberRepository repository)
+    public MembersController(MemberRepository repository, LoanRepository loans)
     {
         _repository = repository;
+        _loans = loans;
     }
 
     public async Task<IActionResult> Index()
     {
         var members = await _repository.GetAllAsync();
-        return View(members);
+        return View("~/Views/Members/Index.cshtml", members);
+    }
+
+    public async Task<IActionResult> Details(long id)
+    {
+        var member = await _repository.GetByIdAsync(id);
+        if (member == null)
+        {
+            return NotFound();
+        }
+
+        var loans = await _loans.GetByMemberAsync(id);
+
+        var viewModel = new MemberDetails
+        {
+            Member = member,
+            Loans = loans
+        };
+
+        return View(viewModel);
     }
 
     public IActionResult Create()
@@ -25,7 +46,6 @@ public class MembersController : Controller
         return View();
     }
 
-    // POST /Members/Create : the form was submitted.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Member member)
@@ -55,7 +75,6 @@ public class MembersController : Controller
         return View(member);
     }
 
-    // POST /Members/Edit/5 : the changed form was submitted.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Member member)
@@ -85,7 +104,6 @@ public class MembersController : Controller
         return View(member);
     }
 
-    // POST /Members/Delete/5 : the delete was confirmed.
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(long id)

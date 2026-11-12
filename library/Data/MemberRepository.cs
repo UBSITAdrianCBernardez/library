@@ -15,25 +15,40 @@ public class MemberRepository
 
     private static Member ReadMember(NpgsqlDataReader reader)
     {
-        return new Member
+        var member = new Member
         {
             MemberId = reader.GetInt64(0),
             FullName = reader.GetString(1),
             Email = reader.IsDBNull(2) ? null : reader.GetString(2),
             MemberType = reader.GetString(3)
         };
+
+        if (reader.FieldCount > 4 && !reader.IsDBNull(4))
+        {
+            member.OpenLoans = Convert.ToInt32(reader.GetInt64(4));
+        }
+
+        return member;
     }
 
-    public async Task<IEnumerable<Member>> GetAllAsync()
+    public async Task<List<Member>> GetAllAsync()
     {
+        const string sql =
+            "SELECT m.member_id, m.full_name, m.email, m.member_type, COUNT(l.loan_id) " +
+            "FROM lending.member m " +
+            "LEFT JOIN lending.loan l ON l.member_id = m.member_id AND l.returned_on IS NULL " +
+            "GROUP BY m.member_id, m.full_name, m.email, m.member_type " +
+            "ORDER BY m.full_name;";
+
         var members = new List<Member>();
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var cmd = new NpgsqlCommand("SELECT member_id, full_name, email, member_type FROM lending.member ORDER BY full_name;", conn);
-        using var reader = await cmd.ExecuteReaderAsync();
+        await using var command = _dataSource.CreateCommand(sql);
+        await using var reader = await command.ExecuteReaderAsync();
+
         while (await reader.ReadAsync())
         {
             members.Add(ReadMember(reader));
         }
+
         return members;
     }
 

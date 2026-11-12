@@ -2,29 +2,34 @@
 @{
     ViewData["Title"] = "Members";
 }
+
 <h2>Members</h2>
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Member</a>
 </p>
-<table class="table">
-    <thead>
+
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
         <tr>
             <th>Full Name</th>
             <th>Email</th>
             <th>Member Type</th>
-            <th>Actions</th>
+            <th>Open Loans</th>
+            <th class="text-end">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var member in Model)
         {
             <tr>
-                <td>@item.FullName</td>
-                <td>@(item.Email ?? "—")</td>
-                <td>@item.MemberType</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
+                <td>@member.FullName</td>
+                <td>@(member.Email ?? "—")</td>
+                <td>@member.MemberType</td>
+                <td>@member.OpenLoans</td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@member.MemberId" class="btn btn-sm btn-outline-primary">Loans</a> |
+                    <a asp-action="Edit" asp-route-id="@member.MemberId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@member.MemberId">Delete</a>
                 </td>
             </tr>
         }

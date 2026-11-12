@@ -1,32 +1,81 @@
-﻿@model List<Member>
+﻿@model IEnumerable<library.Models.LoanView>
 @{
-    ViewData["Title"] = "Members";
+    ViewData["Title"] = "Loans Management";
 }
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <h1 class="mb-0">Members</h1>
-        <p class="text-muted mb-0">@Model.Count registered members</p>
+
+<div class="container py-4">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <!-- Unique Header with Gradient Accent -->
+        <div class="card-header bg-gradient bg-dark text-white p-4 d-flex justify-content-between align-items-center border-bottom border-secondary">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-25 p-3 rounded-3 text-primary border border-primary border-opacity-50">
+                    <i class="bi bi-journal-bookmark-fill fs-4"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1 fw-bold text-white tracking-wide">Loans Directory</h3>
+                    <p class="mb-0 text-white-50 small">Manage active and past library circulations seamlessly</p>
+                </div>
+            </div>
+            <a asp-action="Borrow" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm d-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle-fill"></i> Borrow a Book
+            </a>
+        </div>
+
+        <!-- Table Body Container -->
+        <div class="card-body p-0 bg-white">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <thead class="bg-light text-secondary text-uppercase fs-7 border-bottom">
+                        <tr>
+                            <th class="py-3 ps-4 fw-semibold">Book Title</th>
+                            <th class="py-3 fw-semibold">Member Name</th>
+                            <th class="py-3 fw-semibold">Loaned Date</th>
+                            <th class="py-3 fw-semibold">Status</th>
+                            <th class="py-3 text-end pe-4 fw-semibold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in Model)
+                        {
+                            <tr class="border-bottom border-light position-relative">
+                                <td class="ps-4 py-3 fw-bold text-dark">
+                                    <span class="text-primary me-2">▪</span> @loan.BookTitle
+                                </td>
+                                <td class="py-3 text-secondary">@loan.MemberName</td>
+                                <td class="py-3 text-muted font-monospace small">@loan.LoanedOn.ToString("yyyy-MM-dd")</td>
+                                <td class="py-3">
+                                    @if (loan.ReturnedOn == null)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-15 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill fw-semibold">
+                                            <i class="bi bi-lightning-charge-fill me-1"></i> Out
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-semibold">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Returned
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    @if (loan.ReturnedOn == null)
+                                    {
+                                        <form asp-action="Return" asp-route-id="@loan.LoanId" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-success px-3 rounded-pill fw-semibold shadow-sm">
+                                                <i class="bi bi-arrow-return-left me-1"></i> Return
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted border px-3 py-2 rounded-pill fw-normal fst-italic">Closed</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <a asp-action="Create" class="btn btn-primary">Add a member</a>
 </div>
-<table class="table table-striped table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th style="width:8rem"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var member in Model)
-        {
-            <tr>
-                <td>@member.FullName</td>
-                <td>@member.Email</td>
-                <td class="text-end">
-                    <a asp-action="Details" asp-route-id="@member.MemberId" class="btn btn-sm btn-outline-primary">Loans</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

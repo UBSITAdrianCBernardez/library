@@ -1,39 +1,59 @@
-﻿@model MemberDetails
+﻿@model library.Models.MemberDetails
 @{
-    ViewData["Title"] = Model.Member.FullName;
+    ViewData["Title"] = "Member Loan History";
 }
 
-<h1 class="mb-1">@Model.Member.FullName</h1>
-<p class="text-muted">@Model.Member.MemberType · @(Model.Member.Email ?? "no email")</p>
+<div class="container my-4">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body bg-light rounded p-4">
+            <h2 class="text-primary mb-1">👤 @Model.Member.FullName</h2>
+            <p class="text-muted mb-2">Email: <strong>@(Model.Member.Email ?? "No email provided")</strong> | Type: <span class="badge bg-info text-dark">@Model.Member.MemberType</span></p>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm mt-2">← Back to Members</a>
+        </div>
+    </div>
 
-<h2 class="h5 mt-4">Loans</h2>
-@if (Model.Loans.Count == 0)
-{
-    <p>This member has never borrowed a book.</p>
-}
-else
-{
-    <table class="table table-striped align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Book</th>
-                <th>Loaned</th>
-                <th>Returned</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var loan in Model.Loans)
-            {
-                <tr>
-                    <td>@loan.BookTitle</td>
-                    <td>@(loan.LoanedOn.ToString("yyyy-MM-dd"))</td>
-                    <td>@(loan.ReturnedOn?.ToString("yyyy-MM-dd") ?? "—")</td>
-                    <td>@loan.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-<a asp-action="Index" class="btn btn-link px-0">Back to members</a>
+    <h4 class="mb-3">Loan Records</h4>
+    @if (Model.Loans == null || !Model.Loans.Any())
+    {
+        <div class="alert alert-info py-3">
+            <i class="bi bi-info-circle"></i> This member has never borrowed any books yet.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">Book Title</th>
+                            <th>Loaned On</th>
+                            <th>Returned On</th>
+                            <th class="text-end pe-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in Model.Loans)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold">@loan.BookTitle</td>
+                                <td>@loan.LoanedOn.ToString("yyyy-MM-dd")</td>
+                                <td>@(loan.ReturnedOn?.ToString("yyyy-MM-dd") ?? "—")</td>
+                                <td class="text-end pe-4">
+                                    @if (loan.ReturnedOn == null)
+                                    {
+                                        <span class="badge bg-warning text-dark">Active (Out)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Returned</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
