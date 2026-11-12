@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Loans Management";
 }
-
 <div class="container py-4">
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
         <!-- Unique Header with Gradient Accent -->
@@ -46,13 +45,13 @@
                                 <td class="py-3">
                                     @if (loan.ReturnedOn == null)
                                     {
-                                        <span class="badge bg-warning bg-opacity-15 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill fw-semibold">
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold shadow-sm">
                                             <i class="bi bi-lightning-charge-fill me-1"></i> Out
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-semibold">
+                                        <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-bold shadow-sm">
                                             <i class="bi bi-check-circle-fill me-1"></i> Returned
                                         </span>
                                     }
